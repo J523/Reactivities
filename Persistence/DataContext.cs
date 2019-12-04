@@ -1,13 +1,12 @@
-﻿using System;
-using Domain;
+﻿using Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 
 {
-/*
-Whenever you make changes to the context class you have to add migration for it. else it will not be reflected.
-*/
+    /*
+    Whenever you make changes to the context class you have to add migration for it. else it will not be reflected.
+    */
     public class DataContext : DbContext
     {
         public DataContext(DbContextOptions options):base(options)
@@ -16,7 +15,7 @@ Whenever you make changes to the context class you have to add migration for it.
         }        
 
         public DbSet<Value> Values { get; set; }
-
+        public DbSet<Activity> Activities {get;set;}
         protected override void OnModelCreating(ModelBuilder builder)
         {
             builder.Entity<Value>().HasData(
