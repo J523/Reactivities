@@ -5,9 +5,11 @@ import { Item, Button, Label, Segment } from 'semantic-ui-react'
 interface IProps{
     activities: IActivity[];
     selectActivity : (id:string) => void;
-    deleteActivity : (id:string) => void;
+    deleteActivity : (id:string ,e:React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
+    submitting : boolean ;
+    target : string;
 }
-const ActivityList :React.FC<IProps> = ({activities ,selectActivity,deleteActivity}) => {
+const ActivityList :React.FC<IProps> = ({activities ,selectActivity,deleteActivity ,submitting,target}) => {
     return (
         <Segment clearing>
         <Item.Group divided>
@@ -22,7 +24,7 @@ const ActivityList :React.FC<IProps> = ({activities ,selectActivity,deleteActivi
              </Item.Description>
             <Item.Extra>
          <Label as ='a' color='purple' tag>{activity.category}</Label>
-         <Button floated='right' onClick= {()=> deleteActivity(activity.id)} color ='red'>Delete</Button>
+         <Button name={activity.id} loading={target===activity.id &&submitting} floated='right' onClick= {(e)=> deleteActivity(activity.id,e)} color ='red'>Delete</Button>
               <Button floated='right' color= "instagram" onClick={()=> selectActivity(activity.id)}>View Activity</Button>
             </Item.Extra>
           </Item.Content>
