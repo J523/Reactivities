@@ -1,36 +1,34 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Card, Image, ButtonGroup, Button } from 'semantic-ui-react'
-import { IActivity } from '../../../app/models/activity'
-
-interface IProps{
-    activity : IActivity,
-    editMode : boolean,
-    setEditMode : (editMode:boolean)=> void,
-    setSelectedActivity : (activity: IActivity | null) => void
+import ActivityStore from '../../../app/stores/activityStore'
+import { observer } from 'mobx-react-lite'
+interface IProps{  
+   
 }
 
-const ActivityDetails: React.FC<IProps> = ({activity,setEditMode}) => {
+const ActivityDetails: React.FC<IProps> = () => {
+  const activityStore = useContext(ActivityStore);
 
     return (
         <Card fluid>
-        <Image src={`/assets/categoryImages/${activity.category}.jpg`} wrapped ui={false} />
+        <Image src={`/assets/categoryImages/${activityStore.selectedActivity!.category}.jpg`} wrapped ui={false} />
         <Card.Content>
-        <Card.Header>{activity.title}</Card.Header>
+        <Card.Header>{activityStore.selectedActivity!.title}</Card.Header>
           <Card.Meta>
-            <span className='date'>{activity.date}</span>
+            <span className='date'>{activityStore.selectedActivity!.date}</span>
           </Card.Meta>
           <Card.Description>
-            {activity.venue} , {activity.city}
+            {activityStore.selectedActivity!.venue} , {activityStore.selectedActivity!.city}
           </Card.Description>
         </Card.Content>
         <Card.Content extra>
         <ButtonGroup widths={2}>
-            <Button onClick= {() => setEditMode(true)} basic color='blue'>Edit</Button>
-            <Button basic color='grey'>Cancel</Button>
+            <Button onClick= {() => activityStore.setEditMode(true)} basic color='blue'>Edit</Button>
+            <Button onClick={activityStore.closeActivityDetails} basic color='grey'>Cancel</Button>
         </ButtonGroup>
         </Card.Content>
       </Card>
     )
 }
 
-export default ActivityDetails;
+export default observer(ActivityDetails);

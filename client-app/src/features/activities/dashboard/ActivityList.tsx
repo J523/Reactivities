@@ -1,20 +1,19 @@
-import React from 'react'
-import { IActivity } from '../../../app/models/activity'
+import React, { useContext } from 'react'
 import { Item, Button, Label, Segment } from 'semantic-ui-react'
+import { observer } from 'mobx-react-lite'
+import ActivityStore from '../../../app/stores/activityStore'
 
 interface IProps{
-    activities: IActivity[];
-    selectActivity : (id:string) => void;
-    deleteActivity : (id:string ,e:React.MouseEvent<HTMLButtonElement,MouseEvent>) => void;
-    submitting : boolean ;
-    target : string;
+
 }
-const ActivityList :React.FC<IProps> = ({activities ,selectActivity,deleteActivity ,submitting,target}) => {
+const ActivityList :React.FC<IProps> = () => {
+const activityStore= useContext(ActivityStore);
+
     return (
         <Segment clearing>
         <Item.Group divided>
         
-         {activities.map((activity: IActivity)=>( <Item key={activity.id}>
+         {activityStore.activitiesByDate.map((activity)=>( <Item key={activity.id}>
             <Item.Content verticalAlign='middle'>
           <Item.Header>{activity.title}</Item.Header>
          <Item.Meta>{activity.date}</Item.Meta>
@@ -24,8 +23,8 @@ const ActivityList :React.FC<IProps> = ({activities ,selectActivity,deleteActivi
              </Item.Description>
             <Item.Extra>
          <Label as ='a' color='purple' tag>{activity.category}</Label>
-         <Button name={activity.id} loading={target===activity.id &&submitting} floated='right' onClick= {(e)=> deleteActivity(activity.id,e)} color ='red'>Delete</Button>
-              <Button floated='right' color= "instagram" onClick={()=> selectActivity(activity.id)}>View Activity</Button>
+         <Button name={activity.id} loading={activityStore.target===activity.id &&activityStore.submitting} floated='right' onClick= {(e)=> activityStore.deleteActivity(activity.id,e)} color ='red'>Delete</Button>
+              <Button floated='right' color= "instagram" onClick={()=> activityStore.setselectedActivity(activity.id)}>View Activity</Button>
             </Item.Extra>
           </Item.Content>
         </Item>))} 
@@ -38,4 +37,4 @@ const ActivityList :React.FC<IProps> = ({activities ,selectActivity,deleteActivi
     )
 }
 
-export default ActivityList;
+export default observer(ActivityList);
