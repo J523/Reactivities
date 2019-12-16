@@ -3,6 +3,7 @@ import React, { useContext } from 'react'
 import { Menu, Container, Button } from 'semantic-ui-react'
 import ActivityStore from '../../app/stores/activityStore'
 import { observer } from 'mobx-react-lite';
+import { NavLink } from 'react-router-dom';
 
 interface Iprops{
 
@@ -16,13 +17,11 @@ const activityStore = useContext(ActivityStore);
           <Menu fixed="top" inverted >
             <Container>
             <Menu.Item header>
-            <img src="/assets/logo.png" alt="logo" style ={{marginRight:"10px"}}/> Reactivities
+            <img src="/assets/logo.png" alt="logo" style ={{marginRight:"10px"}}/> <NavLink to='/' >Reactivities</NavLink>  
             </Menu.Item>
-          <Menu.Item
-            name='Activities'
-          />
+          <Menu.Item><NavLink to='/activities' >Activities</NavLink> </Menu.Item>
           <Menu.Item>
-                <Button onClick={activityStore.openForm} positive>Create Activity</Button>
+                <Button onClick={activityStore.openForm} positive> <NavLink to='/createActivity' >Create Activity</NavLink></Button>
                 </Menu.Item>
             </Container>       
     

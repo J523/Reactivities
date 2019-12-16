@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Item, Button, Label, Segment } from 'semantic-ui-react'
 import { observer } from 'mobx-react-lite'
 import ActivityStore from '../../../app/stores/activityStore'
+import { Link } from 'react-router-dom'
 
 interface IProps{
 
@@ -24,7 +25,7 @@ const activityStore= useContext(ActivityStore);
             <Item.Extra>
          <Label as ='a' color='purple' tag>{activity.category}</Label>
          <Button name={activity.id} loading={activityStore.target===activity.id &&activityStore.submitting} floated='right' onClick= {(e)=> activityStore.deleteActivity(activity.id,e)} color ='red'>Delete</Button>
-              <Button floated='right' color= "instagram" onClick={()=> activityStore.setselectedActivity(activity.id)}>View Activity</Button>
+              <Button floated='right' color= "instagram"  as={Link} to ={`/activities/${activity.id}`}>View Activity</Button>
             </Item.Extra>
           </Item.Content>
         </Item>))} 

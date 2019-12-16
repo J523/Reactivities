@@ -1,33 +1,34 @@
-  import React ,{ useEffect, Fragment, useContext} from 'react';
+  import React ,{ Fragment} from 'react';
   import {Container} from 'semantic-ui-react';
 import Navbar from '../../features/navigation/Navbar';
 import ActivityDashboard from '../../features/activities/dashboard/ActivityDashboard';
-import LoadingComponent from './LoadingComponent';
-import ActivityStore from '../stores/activityStore'
 import {observer} from 'mobx-react-lite'
+import { Route,withRouter, RouteComponentProps } from 'react-router';
+import Home from './Home';
+import ActivityForm from '../../features/activities/form/ActivityForm';
+import ActivityDetails from '../../features/activities/details/ActivityDetails';
 
-  const App = () => {
+  const App :React.FC<RouteComponentProps> =  ({location})  => {
 
 
-    //make the store available to this component
-    const activityStore = useContext(ActivityStore);
-
-    useEffect(() => {
-      //here our loadActivities function depends on the mobX activityStore so we have to give that as a dependency
-      activityStore.loadActivities();
-
-      },[activityStore]);
-     
-      if(activityStore.loadingIndicator) return <LoadingComponent content={"...loading"} />
-        /*use the state of activities from the store*/
+    
     return (
       <Fragment>
-        <Navbar></Navbar>
+         <Route exact path='/' component={Home}></Route>
+         <Route path='/(.+)' render = {()=> { return (
+          <Fragment>
+          <Navbar></Navbar>
       
-        <Container style={{marginTop:"7em"}}>
-        
-          <ActivityDashboard/>
-          </Container>
+          <Container style={{marginTop:"7em"}}>
+      
+        <Route exact path='/activities' component={ActivityDashboard}></Route>
+        <Route key= {location.key}  path= {['/createActivity','/manage/:id'] }component={ActivityForm}></Route>
+        <Route path='/activities/:id' component={ActivityDetails}></Route>
+        </Container>
+          </Fragment>
+)
+         }}></Route>
+      
         
       </Fragment>
   );
@@ -35,4 +36,4 @@ import {observer} from 'mobx-react-lite'
 
 
 
-  export default observer(App);
+  export default withRouter(observer(App));

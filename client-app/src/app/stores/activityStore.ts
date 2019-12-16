@@ -8,14 +8,14 @@ configure ({enforceActions: 'always'});
 
 class ActivityStore{
   //making an observable map
-  /*bservable maps are very useful if you don't want to react just to the change of a specific entry, but also to the addition or removal of entries. 
+  /*observable maps are very useful if you don't want to react just to the change of a specific entry, but also to the addition or removal of entries. 
   Optionally takes an object, 
   entries array or string keyed ES6 map with initial values. */
 @observable activityRegistry = new Map();
 
 @observable activities :IActivity[] = [];
 @observable loadingIndicator = false;
-@observable selectedActivity :IActivity | undefined
+@observable activity :IActivity | null = null;
 @observable editMode = false;
 @observable submitting = false;
 @observable target ='';
@@ -43,8 +43,45 @@ this.loadingIndicator =true;
         ()=> runInAction('setting loading indicator',()=>{ this.loadingIndicator=false}))
 }
 
+
+@action clearActivity = ()=>{
+
+  this.activity = null;
+}
+
+@action loadActivity = (id:string) =>{
+
+var activity = this.getActivity(id);
+
+if(activity)
+{
+  this.activity = activity;
+
+}
+else
+{
+  this.loadingIndicator = true;
+agent.Activities.details(id).then((activity)=>{
+
+  runInAction(()=>{
+this.activity = activity;
+
+});
+
+}).finally(()=>{
+runInAction(()=>{ this.loadingIndicator = false;})
+});
+
+}
+}
+
+getActivity = (id:string) =>{
+
+ return this.activityRegistry.get(id);
+}
+
 @action setselectedActivity =(id:string)=>{
-this.selectedActivity = this.activityRegistry.get(id);
+this.activity = this.activityRegistry.get(id);
 this.editMode=false;
 }
 
@@ -62,7 +99,7 @@ this.editMode = isEdit;
 
        runInAction('creating activities',()=>{  this.activityRegistry.set(activity.id,activity);
         this.editMode=false;
-        this.selectedActivity = activity })
+        this.activity = activity })
      
     }).finally(()=>    runInAction(()=>{this.submitting=false}) );
 
@@ -76,7 +113,7 @@ this.editMode = isEdit;
       runInAction('editing activities',()=>{
         this.activityRegistry.set(activity.id,activity);    
         this.editMode=false;
-       this.selectedActivity = activity;
+       this.activity = activity;
 
       })
       
@@ -88,7 +125,7 @@ this.editMode = isEdit;
 @action closeActivityDetails= ()=>{
 
   this.editMode=false;
-  this.selectedActivity=undefined;
+  this.activity=null;
 }
 
 @action deleteActivity = (id:string,e:React.MouseEvent<HTMLButtonElement,MouseEvent>)=>{
@@ -99,7 +136,7 @@ this.editMode = isEdit;
 
           runInAction('deleting activity',()=>{
             this.activityRegistry.delete(id);
-            this.selectedActivity = undefined;
+            this.activity = null;
           })
         
         }).finally(()=> runInAction(()=>{this.submitting =false}) );
@@ -107,7 +144,7 @@ this.editMode = isEdit;
 
 @action openForm = ()=>{
 
-    this.selectedActivity = undefined; 
+    this.activity = null; 
     
     this.editMode=true;
 }
