@@ -23,7 +23,34 @@ class ActivityStore{
 
 @computed get activitiesByDate(){
 
-  return Array.from(this.activityRegistry.values()).sort((a,b)=> Date.parse(a.date)- Date.parse(b.date));
+
+
+
+  return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
+}
+groupActivitiesByDate = (activities:IActivity[]) =>{
+
+  return Object.entries(this.getActivitiesByDate(activities).reduce((groupedActivities,activity)=>{
+
+    let key:string = activity.date.split('T')[0] //would give us this - "2020-02-04"
+
+    if(!groupedActivities[key])
+    {
+    
+    groupedActivities[key] = []
+    
+    }
+    groupedActivities[key] = [...groupedActivities[key],activity];
+
+    return groupedActivities;
+  },{} as  {[key:string] : IActivity[]})
+)
+
+}
+
+getActivitiesByDate = (activities:IActivity[]) =>{
+
+  return activities.sort((a,b)=> Date.parse(a.date)- Date.parse(b.date));
 }
 
 @action loadActivities = () =>{
@@ -34,13 +61,19 @@ this.loadingIndicator =true;
         activity.date = activity.date.split('.')[0];
         /**observable maps are stored in key value pairs . so if we want to access something from the map we do it by its key */
         this.activityRegistry.set(activity.id, activity);
-      })});
+      })
+    
+    });
+    
+    console.log(this.getActivitiesByDate(activities));
+
        
         
       
        }).finally(
          
         ()=> runInAction('setting loading indicator',()=>{ this.loadingIndicator=false}))
+
 }
 
 

@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react'
-import { Segment, Form, Button } from 'semantic-ui-react'
+import { Segment, Form, Button, Grid } from 'semantic-ui-react'
 import { IActivity } from '../../../app/models/activity'
 import {v4 as uuid} from 'uuid'
 import {observer} from 'mobx-react-lite'
@@ -66,7 +66,9 @@ cleanup in a function which we have to return in the useEffect call. This is equ
 
     }
     return (
-       <Segment clearing>
+        <Grid>
+            <Grid.Column width={10}>
+            <Segment clearing>
            <Form onSubmit={handlesubmit}> 
                <Form.Input placeholder="Title" onChange={inputChangeHandler} name='title'  value={activity.title}></Form.Input>
                <Form.TextArea rows={2} placeholder="Description" onChange={inputChangeHandler} name='description'  value={activity.description}></Form.TextArea>
@@ -78,6 +80,9 @@ cleanup in a function which we have to return in the useEffect call. This is equ
                <Button floated='right' onClick={() => history.push('/')} >Cancel</Button>
            </Form>
        </Segment>
+            </Grid.Column>
+        </Grid>
+     
     )
 }
 
