@@ -23,9 +23,6 @@ class ActivityStore{
 
 @computed get activitiesByDate(){
 
-
-
-
   return this.groupActivitiesByDate(Array.from(this.activityRegistry.values()));
 }
 groupActivitiesByDate = (activities:IActivity[]) =>{
@@ -70,7 +67,7 @@ this.loadingIndicator =true;
        
         
       
-       }).finally(
+       }).catch((error)=>{console.log(error)}).finally(
          
         ()=> runInAction('setting loading indicator',()=>{ this.loadingIndicator=false}))
 
@@ -101,7 +98,7 @@ this.activity = activity;
 
 });
 
-}).finally(()=>{
+}).catch(()=>runInAction(()=>{ this.loadingIndicator = false;})).finally(()=>{
 runInAction(()=>{ this.loadingIndicator = false;})
 });
 
@@ -172,6 +169,9 @@ this.editMode = isEdit;
             this.activity = null;
           })
         
+        }).catch(()=>{
+          
+         runInAction(()=>{this.submitting =false})
         }).finally(()=> runInAction(()=>{this.submitting =false}) );
 }
 

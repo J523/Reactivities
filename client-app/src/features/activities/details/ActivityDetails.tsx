@@ -20,9 +20,13 @@ const ActivityDetails: React.FC<RouteComponentProps<RouteParams>> = ({match}) =>
   activityStore.loadActivity(match.params.id) ;
 },[activityStore.loadActivity,match.params.id,activityStore]);
   
-  if(activityStore.loadingIndicator || !activityStore.activity)
+  if(activityStore.loadingIndicator )
  return <LoadingComponent>Loading activities...</LoadingComponent>
 
+ if(!activityStore.activity)
+ {
+   return <h1>Activity not found</h1>
+ }
     return (
         <Grid>
           <Grid.Column width={10}>
